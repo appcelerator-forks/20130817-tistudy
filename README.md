@@ -141,7 +141,7 @@ Qiitaの投稿情報を取得するためにTitanium Mobileの 通信機能を�
 
 #### Titanium Mobileの 通信機能を使って実装する
 
-1. プロジェクト作成時に自動的に生成された**app.jsの中身のソースコードを全て削除**します。
+1. プロジェクト作成時に自動的に生成された **app.jsの中身のソースコードを全て削除**します。
 2. その後に以下を記述します
 
 ```javascript
@@ -184,18 +184,14 @@ xhr.send();
 
 動作確認するために、buildした結果は以下のとおりです
 
-<table>
-<th>iPhone起動時の画面キャプチャ</th>
-<th>Android起動時の画面キャプチャ</th>
-<tr>
-<td>
-<a href="image/qiitaviewer-httpClient-iphone-001.jpg" target="_blank"><img src="https://s3-ap-northeast-1.amazonaws.com/tiuitips/qiitaviewer-httpClient-iphone-001.jpg" alt="iPhone Simulator"></a>
-</td>
-<td>
-<a href="image/qiitaviewer-httpClient-android-001.jpg" target="_blank"><img src="https://s3-ap-northeast-1.amazonaws.com/tiuitips/qiitaviewer-httpClient-android-001.jpg" alt="Android起動時の画面キャプチャ"></a>
-</td>
-</tr>
-</table>
+iPhone起動時の画面キャプチャ
+
+![選択メニュー](image/image/qiitaviewer-httpClient-iphone-001.jpg)
+
+Android起動時の画面キャプチャ
+
+![選択メニュー](image/qiitaviewer-httpClient-android-001.jpg)
+
 
 シミュレーターの画面には何も標示されずコンソール上に複数の文字が標示されるかと思います。
 
@@ -224,13 +220,24 @@ iOS向けの特にニュースリーダー系のアプリケーションに採�
 
 ![TiQiitaの画面キャプチャその１](image/TiQiita-01.png)
 
-![TiQiitaの画面キャプチャその２](image/TiQiita-01.png)
+![TiQiitaの画面キャプチャその２](image/TiQiita-02.png)
 
 ![CraftBeerFanキャプチャその１](image/CraftBeerFan-01.png)
 
 ![CraftBeerFanキャプチャその２](image/CraftBeerFan-02.png)
 
 ### サンプルデータを使ってTableViewの使い方について学ぶ
+
+Titanium Mobileの標準APIであるhttpCLientを通じてQiitaの投稿情報を取得した後に、TableViewを使って画面に表示する機能を最初から作るとなると、理解が進まない可能性があるかと思います。
+
+そこで、まずはあらかじめ準備してあるサンプルデータでのTableViewの使い方について説明します
+
+サンプルデータは以下に準備してあるので、Webブラウザでダウンロードして、必ず現在開発中のTitanium MobileのプロジェクトのResourcesフォルダ直下に保存してください
+
+[http://github.com/h5y1m141/20130817-tistudy/sample.json](http://github.com/h5y1m141/20130817-tistudy/sample.json)
+
+なお、ダウンロードしたファイルは、現在
+
 
 
 ### 取得したQiitaの投稿情報をTableViewを使って画面表示する
