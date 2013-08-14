@@ -40,8 +40,8 @@ Projectのテンプレートを選択する画面が標示されたら、「Defa
 
 Projectの詳細情報を入力する画面が標示されるので以下のように入力/選択して、finishボタンをクリックします
 
-- プロジェクト名:**QiitaViewer**
-- AppID:info.**ti.qiitaviewer**
+- プロジェクト名: **QiitaViewer**
+- AppID: **info.ti.qiitaviewer**
 - ターゲットOS:iPhone、Androidのみチェック。iPad、MobileWebはオフにする
 
 ![Projectの詳細情報入力画面](image/qiitaviewer-project-003.jpg)
@@ -83,51 +83,71 @@ QiitaのようなWebAPIと連携するアプリを開発する場合に、Titani
 
 標準機能のhttpCLientを活用することで簡単に実現できますが、まずはhttpCLientの使い方について解説をします。
 
-1. プロジェクト作成時に自動的に生成されたapp.jsの中身を全て削除します。
-2. その後に以下を記述します
+QiitaのようなWebAPIを提供するWebサービスは多数あるかと思います。そういったWebAPIにアクセスしてXML形式のファイルやJSON形式のテキストファイルを取得する際にTitanium Mobileの標準機能のhttpCLientを活用します。
+
+なお、インターネット上のHTMLコンテンツを取得すること自体はもちろん可能です。ただし、「すべてのimgタグの要素を抜き出す」というようなHTMLの構造を解析した上で、何か処理をしたい場合には、そもそもTitanium MobileのhttpCLientにはそのような機能がありません。
+
+もしもそのような処理をしたい場合には
+- US Yahooが提供してる YQLというサービスを使える仕組みがTitanium Mobile 標準にあるのでそれを活用する
+- Titanium MobileのhttpCLientでHTMLファイルを取得した後、外部のライブラリなどを活用してHTMLの構文解析をする
+
+
+### Qiitaの投稿情報を取得するWebAPIの解説
+
+Titanium Mobileで実装をはじめる前に、Qiitaの投稿情報を取得する時のWebAPIについて簡単に説明します
+
+#### QiitaのWebAPIの構造について
+
+
+#### 実装する前にWebブラウザを使ってQiitaのWebAPIにアクセスする		
+
+実装する前にWebブラウザを使ってQiitaのWebAPIにアクセスして、どのような結果が取得できるのかを確認してみましょう。
+
+Webブラウザを起動して以下URLにアクセスします
+
+[https://qiita.com/api/v1/items](https://qiita.com/api/v1/items)
+
+以下はMac版のGoogle Chromeでアクセスした時の画面イメージになります。
+![ブラウザでアクセスした時のキャプチャ](image/qiitaviewer-webapi-001.jpg)
+
+投稿情報は以下の様なJSON形式になりますが、詳しい情報を知りたい方は、[Qiitaのサイトをご覧ください](http://qiita.com/docs#13)
 
 ```javascript
-var xhr,qiitaURL,method;
-qiitaURL = "https://qiita.com/api/v1/items";
-method = "GET";
-xhr = Ti.Network.createHTTPClient();
-xhr.open(method,qiitaURL);
-xhr.onload = function(){
-  var body;
-  if (this.status === 200) {
-    body = JSON.parse(this.responseText);
-	Ti.API.info(body);
-  } else {
-    Ti.API.info("error:status code is " + this.status);
-  }
-}
-xhr.onerror = function(e) {
-  var error;
-  error = JSON.parse(this.responseText);
-  Ti.API.info(error.error);
-}
-xhr.timeout = 5000;
-xhr.send();
+[{"id": 1,
+ "uuid": "1a43e55e7209c8f3c565",
+ "user":
+  {"name": "Hiroshige Umino",
+   "url_name": "yaotti",
+   "profile_image_url": "https://si0.twimg.com/profile_images/2309761038/1ijg13pfs0dg84sk2y0h_normal" },
+ "title": "てすと",
+ "body": "<p>foooooooooooooooo</p>\n",
+ "created_at": "2012-10-03 22:12:36 +0900",
+ "updated_at": "2012-10-03 22:12:36 +0900",
+ "created_at_in_words": "18 hours ago",
+ "updated_at_in_words": "18 hours ago",
+ "tags":
+  [{"name": "FOOBAR",
+    "url_name": "FOOBAR",
+    "icon_url": "http://qiita.com/icons/thumb/missing.png",
+    "versions": ['1.2', '1.3']}],
+ "stock_count": 0,
+ "stock_users": [],
+ "comment_count": 0,
+ "url": "http://qiita.com/items/1a43e55e7209c8f3c565",
+ "gist_url": null,
+ "tweet": false,
+ "private": false,
+ "stocked": false
+},
+ ...
+]
 ```
 
-動作確認するために、buildした結果は以下のとおりです
+### Qiitaの投稿情報を取得する処理を実装する
 
-<table>
-<th>iPhone起動時の画面キャプチャ</th>
-<th>Android起動時の画面キャプチャ</th>
-<tr>
-<td>
-<a href="image/qiitaviewer-httpClient-iphone-001.jpg" target="_blank"><img src="https://s3-ap-northeast-1.amazonaws.com/tiuitips/qiitaviewer-httpClient-iphone-001.jpg" alt="iPhone Simulator"></a>
-</td>
-<td>
-<a href="image/qiitaviewer-httpClient-android-001.jpg" target="_blank"><img src="https://s3-ap-northeast-1.amazonaws.com/tiuitips/qiitaviewer-httpClient-android-001.jpg" alt="Android起動時の画面キャプチャ"></a>
-</td>
-</tr>
-</table>
+QiitaのWebAPIの構造についておおまかに理解した上で実際にQiitaの投稿情報を取得する処理を実装していきます。
 
-
-シミュレーターの画面には何も標示されずコンソール上に複数の文字が標示されるかと思いますので、その点が確認できたらOKです。
-#### Titanium Mobileの 通信機能のhttpClientについて
+#### Titanium Mobileの 通信機能を使って実装する
 
 Titanium MobileのhttpClientについて解説します
 
@@ -169,61 +189,57 @@ xhr.send();
 
 ![httpClientのonloadとonerrorの対応関係](image/qiitaviewer-httpClient-overview-001.jpg)
 
-### Qiitaの投稿情報を取得するWebAPIの解説
+動作確認するために、buildした結果は以下のとおりです
 
-Titanium Mobileで実装をはじめる前に、Qiitaの投稿情報を取得する時のWebAPIについて簡単に説明します
+<table>
+<th>iPhone起動時の画面キャプチャ</th>
+<th>Android起動時の画面キャプチャ</th>
+<tr>
+<td>
+<a href="image/qiitaviewer-httpClient-iphone-001.jpg" target="_blank"><img src="https://s3-ap-northeast-1.amazonaws.com/tiuitips/qiitaviewer-httpClient-iphone-001.jpg" alt="iPhone Simulator"></a>
+</td>
+<td>
+<a href="image/qiitaviewer-httpClient-android-001.jpg" target="_blank"><img src="https://s3-ap-northeast-1.amazonaws.com/tiuitips/qiitaviewer-httpClient-android-001.jpg" alt="Android起動時の画面キャプチャ"></a>
+</td>
+</tr>
+</table>
 
-#### QiitaのWebAPIの構造について
-ブラウザで以下URLにアクセスすることでパブリックな新着投稿を取得することができます。
+シミュレーターの画面には何も標示されずコンソール上に複数の文字が標示されるかと思いますので、その点が確認できたらOKです。
 
-[https://qiita.com/api/v1/items](https://qiita.com/api/v1/items)
+この段階ではTitanium Mobileの通信機能を使ってデータ取得することを目的に実装しているため、スマートフォンの画面表示するところまでは実装していません。
 
-※Google Chromeでアクセスした時の例
-![ブラウザでアクセスした時のキャプチャ](image/qiitaviewer-webapi-001.jpg)
+次の章で、Qiitaから取得した結果を画面に配置する処理について解説していきます
 
-投稿情報は以下の様なJSON形式になりますが、詳しい情報を知りたい方は、[Qiitaのサイトをご覧ください](http://qiita.com/docs#13)
-
-```javascript
-[{"id": 1,
- "uuid": "1a43e55e7209c8f3c565",
- "user":
-  {"name": "Hiroshige Umino",
-   "url_name": "yaotti",
-   "profile_image_url": "https://si0.twimg.com/profile_images/2309761038/1ijg13pfs0dg84sk2y0h_normal" },
- "title": "てすと",
- "body": "<p>foooooooooooooooo</p>\n",
- "created_at": "2012-10-03 22:12:36 +0900",
- "updated_at": "2012-10-03 22:12:36 +0900",
- "created_at_in_words": "18 hours ago",
- "updated_at_in_words": "18 hours ago",
- "tags":
-  [{"name": "FOOBAR",
-    "url_name": "FOOBAR",
-    "icon_url": "http://qiita.com/icons/thumb/missing.png",
-    "versions": ['1.2', '1.3']}],
- "stock_count": 0,
- "stock_users": [],
- "comment_count": 0,
- "url": "http://qiita.com/items/1a43e55e7209c8f3c565",
- "gist_url": null,
- "tweet": false,
- "private": false,
- "stocked": false
-},
- ...
-]
-```
-
-
-#### 実装する前にWebブラウザを使ってQiitaのWebAPIにアクセスする		
-
-### Qiitaの投稿情報を取得する処理を実装する
-#### Titanium Mobileの 通信機能を使って実装する
 ## Qiitaから取得した結果を画面に配置する
+
+Titanium Mobileの通信機能を使ってQiitaの投稿情報を取得できるようになったかと思います。
+
+取得した結果をスマートフォン上で見やすく配置する方法について順番に解説していきます
+
 ### スマートフォン向けアプリでよくある一覧機能表示する機能についての解説
+
+
+
 #### Titanium MobileのTableViewについて
+
+iOS向けの特にニュースリーダー系のアプリケーションに採用されているユーザインタフェースとして、垂直方向にスクロールしながら情報を表示するようなものがあるかと思いますが、そういったユーザインタフェースを実現するための要素としてTableViewというものがあります。
+
 #### 活用事例の紹介
+
+ニュースリーダー系のアプリケーションと言っても、イメージがつかない場合もあるかと思いますので、TableViewの活用事例について紹介します。
+
+
+![TiQiitaの画面キャプチャその１](image/TiQiita-01.png)
+
+![TiQiitaの画面キャプチャその２](image/TiQiita-01.png)
+
+![CraftBeerFanキャプチャその１](image/CraftBeerFan-01.png)
+
+![CraftBeerFanキャプチャその２](image/CraftBeerFan-02.png)
+
 ### サンプルデータを使ってTableViewの使い方について学ぶ
+
+
 ### 取得したQiitaの投稿情報をTableViewを使って画面表示する
 
 Titanium Mobileの標準APIであるhttpCLientを活用して、Qiitaの投稿情報を取得する処理までは実装出来ましたので、今度は取得した情報を画面に表示する部分について解説します
@@ -236,7 +252,7 @@ Qiitaの開発者向けのAPIを通じて投稿情報を取得した結果をTab
 
 ![概念図１](image/qiitaviewer-tableView-overview-001.jpg)
 
-まずは取得した投稿情報のタイトルのみを表示する以下のソースコードをサンプルに順次解説していきます。
+以下のソースコードをサンプルに順次解説していきます。
 
 ```javascript
 var xhr,qiitaURL,method,mainTable,win;
@@ -331,45 +347,6 @@ xhr.send();
 
 ![概念図２](image/qiitaviewer-tableView-overview-002.jpg)
 
-投稿したユーザのアイコンを表示するために、TitaniumのImageViewを以下のように活用します。
-
-```javascript
-// 一部抜粋
-imagePath = body[_i].user.profile_image_url;
-iconImage = Ti.UI.createImageView({
-  width:40,
-  height:40,
-  top:5,
-  left:5,
-  defaultImage:"logo.png",
-  image: imagePath
-});
-row.add(iconImage);
-```
-
-今回のようなWebAPIを通じて画像を取得して表示するような場合、ネットワークの回線状況によってはすぐに標示されるとは限りません。
-
-そのため、ImageViewのdefaultImageというプロパティに、あらかじめローカルに準備しておいた画像を指定することで、
-
-1. 最初にローカルの画像が表示
-2. 画像のダウンロード完了時に、ローカルの画像とリモートから取得した画像が入れ替わる
-
-という処理が自動的にされるので、このdefaultImageは積極的に活用することをお勧めします
-
-上記ソースコードをbuildして、iPhone、AndroidのEmulatorで表示した場合以下の様になります
-
-<table>
-<th>iPhone起動時の画面キャプチャ</th>
-<th>Android起動時の画面キャプチャ</th>
-<tr>
-<td>
-<a href="image/qiitaviewer-tableView-iphone-001.jpg" target="_blank"><img src="https://s3-ap-northeast-1.amazonaws.com/tiuitips/qiitaviewer-tableView-iphone-001.jpg" alt="iPhone Simulator"></a>
-</td>
-<td>
-<a href="image/qiitaviewer-tableView-android-001.jpg" target="_blank"><img src="https://s3-ap-northeast-1.amazonaws.com/tiuitips/qiitaviewer-tableView-android-001.jpg" alt="iPhone Simulator"></a>
-</tr>
-</table>
-
 TableViewを使って投稿情報のタイトルと投稿したユーザのアイコンを表示するソースコード全体は以下になります
 
 ```javascript
@@ -444,7 +421,57 @@ xhr.onerror = function(e) {
 xhr.timeout = 5000;
 xhr.send();
 ```
-QiitaViewerの機能としてはひとまずここまでにとどめることにします。
+
+上記ソースコードをbuildして、iPhone、AndroidのEmulatorで表示した場合以下の様になります
+
+<table>
+<th>iPhone起動時の画面キャプチャ</th>
+<th>Android起動時の画面キャプチャ</th>
+<tr>
+<td>
+<a href="image/qiitaviewer-tableView-iphone-001.jpg" target="_blank"><img src="https://s3-ap-northeast-1.amazonaws.com/tiuitips/qiitaviewer-tableView-iphone-001.jpg" alt="iPhone Simulator"></a>
+</td>
+<td>
+<a href="image/qiitaviewer-tableView-android-001.jpg" target="_blank"><img src="https://s3-ap-northeast-1.amazonaws.com/tiuitips/qiitaviewer-tableView-android-001.jpg" alt="iPhone Simulator"></a>
+</tr>
+</table>
+
+
+なお、投稿したユーザのアイコンを表示する時に１つ意識しておいたほうが良い部分があります。
+
+今回のようなWebAPIを通じて画像を取得して表示するような場合、ネットワークの回線状況によってはすぐに標示されるとは限りません。
+
+そのため、ImageViewのdefaultImageというプロパティに、あらかじめローカルに準備しておいた画像を指定することで、
+
+1. 最初にローカルの画像が表示
+2. 画像のダウンロード完了時に、ローカルの画像とリモートから取得した画像が入れ替わる
+
+という処理が自動的にされるので、以下のようにTitaniumのImageViewのdefaultImageのプロパティを適切に設定することをお勧めします
+
+```javascript
+// 一部抜粋
+imagePath = body[_i].user.profile_image_url;
+iconImage = Ti.UI.createImageView({
+  width:40,
+  height:40,
+  top:5,
+  left:5,
+  defaultImage:"logo.png",
+  image: imagePath
+});
+row.add(iconImage);
+```
 
 ## 参考資料
  
+### YQL
+
+インターネット上にあるコンテンツをSQLに似た独自言語で取得することが出来るUS Yahooが提供してるWebサービス。
+
+
+### HTML parser
+
+私は使ったことないですが、Titanium Mobile向けのHTML parserがGitHubのGistにあります。
+
+[詳しくはこちら](https://gist.github.com/zeuxisoo/1016047)
+
