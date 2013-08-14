@@ -186,7 +186,7 @@ xhr.send();
 
 iPhone起動時の画面キャプチャ
 
-![選択メニュー](image/image/qiitaviewer-httpClient-iphone-001.jpg)
+![選択メニュー](image/qiitaviewer-httpClient-iphone-001.jpg)
 
 Android起動時の画面キャプチャ
 
@@ -216,15 +216,26 @@ iOS向けの特にニュースリーダー系のアプリケーションに採�
 #### 活用事例の紹介
 
 ニュースリーダー系のアプリケーションと言っても、イメージがつかない場合もあるかと思いますので、TableViewの活用事例について紹介します。
-
-
-![TiQiitaの画面キャプチャその１](image/TiQiita-01.png)
-
-![TiQiitaの画面キャプチャその２](image/TiQiita-02.png)
-
-![CraftBeerFanキャプチャその１](image/CraftBeerFan-01.png)
-
-![CraftBeerFanキャプチャその２](image/CraftBeerFan-02.png)
+<table>
+<th>TiQiitaの画面キャプチャ</th>
+<th>CraftBeerFanの画面キャプチャ</th>
+<tr>
+<td>
+<a href="image/TiQiita-01.png" target="_blank"><img src="image/TiQiita-01.png" alt="TiQiitaの画面キャプチャその１"></a>
+</td>
+<td>
+<a href="image/CraftBeerFan-01.png" target="_blank"><img src="image/CraftBeerFan-01.png" alt="CraftBeerFanキャプチャその１"></a>
+</td>
+</tr>
+<tr>
+<td>
+<a href="image/TiQiita-02.png" target="_blank"><img src="image/TiQiita-02.png" alt="TiQiitaの画面キャプチャその2"></a>
+</td>
+<td>
+<a href="image/CraftBeerFan-02.png" target="_blank"><img src="image/CraftBeerFan-02.png" alt="CraftBeerFanキャプチャその2"></a>
+</td>
+</tr>
+</table>
 
 ### サンプルデータを使ってTableViewの使い方について学ぶ
 
