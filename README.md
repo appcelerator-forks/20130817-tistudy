@@ -88,9 +88,11 @@ QiitaのようなWebAPIを提供するWebサービスは多数あるかと思い
 なお、インターネット上のHTMLコンテンツを取得すること自体はもちろん可能です。ただし、「すべてのimgタグの要素を抜き出す」というようなHTMLの構造を解析した上で、何か処理をしたい場合には、そもそもTitanium MobileのhttpCLientにはそのような機能がありません。
 
 もしもそのような処理をしたい場合には
+
 - US Yahooが提供してる YQLというサービスを使える仕組みがTitanium Mobile 標準にあるのでそれを活用する
 - Titanium MobileのhttpCLientでHTMLファイルを取得した後、外部のライブラリなどを活用してHTMLの構文解析をする
 
+という方法で実現出来ます。今回はHTMLファイルを取得する処理は取り上げませんが興味ある方は最後の参考資料の情報を参考にしてみてください
 
 ### Qiitaの投稿情報を取得するWebAPIの解説
 
@@ -245,7 +247,7 @@ Titanium Mobileの標準APIであるhttpCLientを通じてQiitaの投稿情報�
 
 サンプルデータは以下に準備してあるので、Webブラウザでダウンロードして、必ず現在開発中のTitanium MobileのプロジェクトのResourcesフォルダ直下に保存してください
 
-[http://github.com/h5y1m141/20130817-tistudy/sample.json](http://github.com/h5y1m141/20130817-tistudy/sample.json)
+[https://raw.github.com/h5y1m141/20130817-tistudy/master/sample.json](https://raw.github.com/h5y1m141/20130817-tistudy/master/sample.json)
 
 保存が完了したら、以下要領で作業をします
 
@@ -255,7 +257,7 @@ Titanium Mobileの標準APIであるhttpCLientを通じてQiitaの投稿情報�
 ```javascript
 var sample, file, body, mainTable, win, i ,len ,row ,rows,textLabel;
 // ダウンロードしたJSONファイルを読み込む処理
-sample = Titanium.Filesystem.getFile(Titanium.Filesystem.resourcesDirectory, "sample.json");
+sample = Ti.Filesystem.getFile(Ti.Filesystem.resourcesDirectory, "sample.json");
 file = sample.read().toString();
 body = JSON.parse(file);
 
@@ -533,6 +535,8 @@ row.add(iconImage);
 
 インターネット上にあるコンテンツをSQLに似た独自言語で取得することが出来るUS Yahooが提供してるWebサービス。
 
+「YQLをTitaniumで使うと色々捗る」というブログ記事でTitanium MobileでのYQL使ったサンプルが紹介されてます
+[http://d.hatena.ne.jp/zebevogue/20120421/1334990568](http://d.hatena.ne.jp/zebevogue/20120421/1334990568)
 
 ### HTML parser
 
