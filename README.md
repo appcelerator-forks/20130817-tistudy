@@ -245,6 +245,10 @@ Titanium Mobileの標準APIであるhttpCLientを通じてQiitaの投稿情報�
 
 そこで、まずはあらかじめ準備してあるサンプルデータでのTableViewの使い方について説明します
 
+これから実装する処理イメージとしては以下のようになります
+
+![ローカルのJSONを活用したTableView](image/localJSONSample.png)
+
 サンプルデータは以下に準備してあるので、Webブラウザでダウンロードして、必ず現在開発中のTitanium MobileのプロジェクトのResourcesフォルダ直下に保存してください
 
 [https://raw.github.com/h5y1m141/20130817-tistudy/master/sample.json](https://raw.github.com/h5y1m141/20130817-tistudy/master/sample.json)
@@ -339,12 +343,12 @@ method = "GET";
 xhr = Ti.Network.createHTTPClient();
 xhr.open(method,qiitaURL);
 xhr.onload = function(){
-  var body,_i ,_len ,row ,rows,textLabel;
+  var body,i ,len ,row ,rows,textLabel;
   if (this.status === 200) {
     body = JSON.parse(this.responseText);
     rows = [];
-    for (_i = 0, _len = body.length; _i < _len; _i++) { // (1)
-      Ti.API.info(body[_i].title);
+    for (i = 0, len = body.length; i < len; i++) { // (1)
+      Ti.API.info(body[i].title);
       row = Ti.UI.createTableViewRow({	// (2)
         width: 'auto',
         height:40,
@@ -362,7 +366,7 @@ xhr.onload = function(){
           fontSize:16,
           fontWeight:'bold'
         },
-        text:body[_i].title
+        text:body[i].title
       });
       row.add(textLabel);		// (4)
       rows.push(row);			// (5)
@@ -434,11 +438,11 @@ method = "GET";
 xhr = Ti.Network.createHTTPClient();
 xhr.open(method,qiitaURL);
 xhr.onload = function(){
-  var body,_i ,_len ,row ,rows,textLabel,iconImage,imagePath;
+  var body,i ,len ,row ,rows,textLabel,iconImage,imagePath;
   if (this.status === 200) {
     body = JSON.parse(this.responseText);
     rows = [];
-    for (_i = 0, _len = body.length; _i < _len; _i++) {
+    for (i = 0, len = body.length; i < len; i++) {
       row = Ti.UI.createTableViewRow({
         width: 'auto',
         height:60,
@@ -456,9 +460,9 @@ xhr.onload = function(){
           fontSize:16,
           fontWeight:'bold'
         },
-        text:body[_i].title
+        text:body[i].title
       });
-      imagePath = body[_i].user.profile_image_url;
+      imagePath = body[i].user.profile_image_url;
       iconImage = Ti.UI.createImageView({
         width:40,
         height:40,
@@ -517,7 +521,7 @@ xhr.send();
 
 ```javascript
 // 一部抜粋
-imagePath = body[_i].user.profile_image_url;
+imagePath = body[i].user.profile_image_url;
 iconImage = Ti.UI.createImageView({
   width:40,
   height:40,
