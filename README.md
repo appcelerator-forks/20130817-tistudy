@@ -98,6 +98,29 @@ Titanium Mobileで実装をはじめる前に、Qiitaの投稿情報を取得す
 
 #### QiitaのWebAPIの構造について
 
+QiitaのWebAPIは
+
+https://qiita.com/api/v1/[利用したいサービス別のディレクトリ]
+
+という形になってます。
+
+[Qiitaの開発者向けのドキュメント](http://qiita.com/docs)に利用したいサービス別のディレクトリ情報などがまとまってますが、ドキュメントの読み方について簡単に説明します
+
+特定ユーザの情報取得の項では
+
+GET /api/v1/users/:url_name
+
+と記載されています
+
+例えば、私のQiita上のユーザ情報（アカウント名はh5y1m141@github)を取得したい場合には **:url_name** の所を該当ユーザに置き換えることで情報が取得出来ます。
+
+具体的には、以下URLにアクセスすることで私のQiita上のユーザ情報を取得することができます
+
+[https://qiita.com/api/v1/users/h5y1m141@github](https://qiita.com/api/v1/users/h5y1m141@github)
+
+```javascript
+{"id":10187,"url_name":"h5y1m141@github","profile_image_url":"https://secure.gravatar.com/avatar/4fdf95707fe9a33f3a1ba8c97315468c?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png","url":"http://qiita.com/h5y1m141@github","description":"iPhone用のQiita Viewerアプリ作ってます\r\nhttps://github.com/h5y1m141/TiQiita","website_url":"http://h5y1m141.hatenablog.com/","organization":"","location":"","facebook":"","linkedin":"","twitter":null,"github":"h5y1m141","followers":7,"following_users":9,"items":1,"teams":[],"image_upload":{"limit":2097152,"used":0}}
+```
 
 #### 実装する前にWebブラウザを使ってQiitaのWebAPIにアクセスする		
 
@@ -110,38 +133,6 @@ Webブラウザを起動して以下URLにアクセスします
 以下はMac版のGoogle Chromeでアクセスした時の画面イメージになります。
 ![ブラウザでアクセスした時のキャプチャ](image/qiitaviewer-webapi-001.jpg)
 
-投稿情報は以下の様なJSON形式になりますが、詳しい情報を知りたい方は、[Qiitaのサイトをご覧ください](http://qiita.com/docs#13)
-
-```javascript
-[{"id": 1,
- "uuid": "1a43e55e7209c8f3c565",
- "user":
-  {"name": "Hiroshige Umino",
-   "url_name": "yaotti",
-   "profile_image_url": "https://si0.twimg.com/profile_images/2309761038/1ijg13pfs0dg84sk2y0h_normal" },
- "title": "てすと",
- "body": "<p>foooooooooooooooo</p>\n",
- "created_at": "2012-10-03 22:12:36 +0900",
- "updated_at": "2012-10-03 22:12:36 +0900",
- "created_at_in_words": "18 hours ago",
- "updated_at_in_words": "18 hours ago",
- "tags":
-  [{"name": "FOOBAR",
-    "url_name": "FOOBAR",
-    "icon_url": "http://qiita.com/icons/thumb/missing.png",
-    "versions": ['1.2', '1.3']}],
- "stock_count": 0,
- "stock_users": [],
- "comment_count": 0,
- "url": "http://qiita.com/items/1a43e55e7209c8f3c565",
- "gist_url": null,
- "tweet": false,
- "private": false,
- "stocked": false
-},
- ...
-]
-```
 
 ### Qiitaの投稿情報を取得する処理を実装する
 
