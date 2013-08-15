@@ -40,11 +40,11 @@ Projectのテンプレートを選択する画面が標示されたら、「Defa
 
 Projectの詳細情報を入力する画面が標示されるので以下のように入力/選択して、finishボタンをクリックします
 
-- プロジェクト名: **QiitaViewer**
-- AppID: **info.ti.qiitaviewer**
-- ターゲットOS:iPhone、Androidのみチェック。iPad、MobileWebはオフにする
+- プロジェクト名: **PECforTiStudy**
+- AppID: **info.PECforTiStudy**
+- ターゲットOS: **iPhone、Androidのみチェック。** iPad、MobileWebはオフにする
 
-![Projectの詳細情報入力画面](image/qiitaviewer-project-003.jpg)
+![Projectの詳細情報入力画面](image/setupProject.png)
 
 しばらくすると、以下の様な画面が標示されて、Projectの初期設定が完了します
 
@@ -133,6 +133,7 @@ Webブラウザを起動して以下URLにアクセスします
 [https://qiita.com/api/v1/items](https://qiita.com/api/v1/items)
 
 以下はMac版のGoogle Chromeでアクセスした時の画面イメージになります。
+
 ![ブラウザでアクセスした時のキャプチャ](image/qiitaviewer-webapi-001.jpg)
 
 QiitaのWebAPIの構造についておおまかに理解出来たかと思いますので、実際にQiitaの投稿情報を取得する処理を実装していきます。
